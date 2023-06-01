@@ -16,11 +16,13 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors);
 
 // ROUTES
-/* 
-drivers
-rides
-users
-*/
+// app.use('/rides', rides);
+// app.use('/drivers', drivers);
+// app.use('/users', users);
 
 // MONGODB/MONGOOSE SETUP
 const PORT = process.env.PORT || 9000;
+mongoose
+  .connect()
+  .then()
+  .catch()
