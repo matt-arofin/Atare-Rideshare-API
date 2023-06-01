@@ -23,6 +23,11 @@ app.use(cors);
 // MONGODB/MONGOOSE SETUP
 const PORT = process.env.PORT || 9000;
 mongoose
-  .connect()
-  .then()
-  .catch()
+  .connect(process.env.MONGO_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  })
+  .then(async () => {
+    app.listen(PORT, () => console.log(`Server running on Port: ${PORT}`))
+  })
+  .catch((error) => console.error(`${error} Did not connect`))
