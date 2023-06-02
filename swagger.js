@@ -12,7 +12,7 @@ const swaggerOptions = {
       }
     }
   },
-  apis: ['./api/*.js']
+  apis: ['./api/*/*.js']
 };
 
 const swaggerSpec = swaggerJSDoc(swaggerOptions)

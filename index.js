@@ -7,8 +7,8 @@ import mongoose from "mongoose";
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from "./swagger.js";
 import usersRouter from "./api/users/usersRouter.js";
-import User from "./api/users/usersModel.js";
-import mockUsers from "./data/usersData.js";
+// import userModel from "./api/users/usersModel.js";
+// import mockUsers from "./data/usersData.js";
 
 
 // CONFIGURATIONS
@@ -18,20 +18,18 @@ const server = express();
 server.use(express.json());
 server.use(helmet());
 server.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin"}));
-server.use(bodyParser.json());
-server.use(bodyParser.urlencoded({ extended: false }));
-server.use(cors);
+server.use(cors());
 server.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // ROUTES
-// server.use('/drivers', drivers);
-// server.use('/rides', rides);
+// server.use('/api/drivers', drivers);
+// server.use('/api/rides', rides);
 server.use('/api/users', usersRouter);
 
-// MONGODB/MONGOOSE SETUP
 const PORT = process.env.PORT || 9000;
 server.listen(PORT, () => console.log(`Server running on port: ${PORT}`));
 
+// MONGODB/MONGOOSE SETUP
 mongoose
 .connect(process.env.MONGO_URL, {
   useNewUrlParser: true,
@@ -40,8 +38,11 @@ mongoose
 .then(async () => {
     const db = mongoose.connection;
     
-    await db.dropDatabase();
-    User.insertMany(mockUsers);
+    // This code resets the database and populates it with new randomly generated information when the server is started
+    // await db.dropDatabase();
+    // userModel.insertMany(mockUsers);
+    // driverModel.insertMany(mockDrivers);
+    // rideModel.insertMany(mockRides);
 
     await db.on('connected', () => {
       console.log('Connected to MongoDB')
