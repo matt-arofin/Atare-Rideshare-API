@@ -2,20 +2,32 @@ import mongoose from "mongoose";
 
 const rideSchema = new mongoose.Schema({
   driver: {
-    type: String,
+    type: {
+      name: String,
+      phoneNumber: String
+    },
     required: true,
   },
   passengers: {
-    type: Array,
+    type: [{
+      name: String,
+      phoneNumber: String,
+    }],
     default: [],
   },
   locations: {
     pickup: {
-      type: String,
+      type: {
+        latitude: String,
+        longitude: String,
+      },
       required: true,
     },
     dropoff: {
-      type: String,
+      type: {
+        latitude: String,
+        longitude: String,
+      },
       required: true,
     },
   },
