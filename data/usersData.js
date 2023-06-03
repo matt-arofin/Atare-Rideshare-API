@@ -6,6 +6,7 @@ const generateMockUsers = (count) => {
     const user = {
       name: faker.person.fullName(),
       email: faker.internet.email(),
+      phoneNumber: faker.phone.number('+234 ### ### ####'),
       address: faker.location.streetAddress(),
     };
     users.push(user);

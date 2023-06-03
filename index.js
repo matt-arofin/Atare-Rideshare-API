@@ -7,8 +7,11 @@ import mongoose from "mongoose";
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from "./swagger.js";
 import usersRouter from "./api/users/usersRouter.js";
+import driversRouter from "./api/drivers/driversRouter.js";
 // import userModel from "./api/users/usersModel.js";
 // import mockUsers from "./data/usersData.js";
+// import driverModel from "./api/drivers/driversModel.js";
+// import mockDrivers from "./data/driversData.js";
 
 
 // CONFIGURATIONS
@@ -22,7 +25,7 @@ server.use(cors());
 server.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // ROUTES
-// server.use('/api/drivers', drivers);
+server.use('/api/drivers', driversRouter);
 // server.use('/api/rides', rides);
 server.use('/api/users', usersRouter);
 
@@ -38,7 +41,7 @@ mongoose
 .then(async () => {
     const db = mongoose.connection;
     
-    // This code resets the database and populates it with new randomly generated information when the server is started
+    // The code below resets and populates the database with new random tables when the server starts. The number of entries can be adjusted to simulate larger table queries. Otherwise, existing dummy data may be used for testing and demonstration purposes.
     // await db.dropDatabase();
     // userModel.insertMany(mockUsers);
     // driverModel.insertMany(mockDrivers);

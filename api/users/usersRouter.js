@@ -8,7 +8,7 @@ const router = express.Router();
  * tags:
  *  name: Users
  *  description: User management
-*/
+ */
 
 /**
  * @swagger
@@ -43,7 +43,7 @@ const router = express.Router();
  *                },
  *                ...]
  *      404:
- *        description: Internal Server Error
+ *        description: Not Found
  *        content:
  *          application/json:
  *            schema:
@@ -63,7 +63,8 @@ const router = express.Router();
  *                error:
  *                  type: string
  *                  description: Error message indicating the reason for the failure
-*/
+ *                  example: "Error fetching users: Internal Server Error"
+ */
 // GET request to base url <- returns all users
 router.get("/", async (req, res) => {
 	console.log("Here is a list of all users");
@@ -77,7 +78,7 @@ router.get("/", async (req, res) => {
 
 /**
  * @swagger
- * /api/users/:id:
+ * /api/users/{id}:
  *  get:
  *    summary: Get a specific user
  *    description: Returns a single user object
@@ -90,14 +91,36 @@ router.get("/", async (req, res) => {
  *              type: array
  *              example:
  *                {
-*                  "_id": {
-*                    "$oid": "64791add9e685f33dbc97b44"
-*                  },
-*                  "name": "Mrs. Vicki Wiza Jr.",
-*                  "email": "Eric_Strosin16@yahoo.com",
-*                  "address": "1010 Emmalee Expressway",
-*                  "__v": 0
+ *                  "_id": {
+ *                    "$oid": "64791add9e685f33dbc97b44"
+ *                  },
+ *                  "name": "Mrs. Vicki Wiza Jr.",
+ *                  "email": "Eric_Strosin16@yahoo.com",
+ *                  "address": "1010 Emmalee Expressway",
+ *                  "__v": 0
  *                }
+ *      404:
+ *        description: Not Found
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                error:
+ *                  type: string
+ *                  description: Error message indicating indicating the reason for the failure
+ *                  example: "Resource not found: User"
+ *      500:
+ *        description: Internal Server Error
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                error:
+ *                  type: string
+ *                  description: Error message indicating the reason for the failure
+ *                  example: "Error fetching users: Internal Server Error"
  */
 //GET by id (/:id) <- can be tested using 64791add9e685f33dbc97b44
 router.get("/:id", async (req, res) => {
@@ -116,22 +139,68 @@ router.get("/:id", async (req, res) => {
  * @swagger
  * /api/users:
  *  post:
- *    summary: Post a new user to database
- *    description: Returns a new user object
- *    body: {user: { name, email, address }}
- *    responses:
+ *    summary: Create a new user
+ *    description: Creates a new user object and adds it to the database
+ *    requestBody:
+ *      required: true
+ *    content:
+ *    application/json:
+ *      schema:
+ *        type: object
+ *        properties:
+ *          name:
+ *            type: string,
+ *            description: The name of the user
+ *          email:
+ *            type: string
+ *            description: The email address of the user
+ *          address:
+ *            type: string
+ *            description: The address of the user
  *      201:
  *        description: Successful response
  *        content:
  *          application/json:
  *            schema:
  *              type: object
+ *              properties:
+ *                name:
+ *                  type: string,
+ *                  description: The name of the user
+ *                email:
+ *                  type: string
+ *                  description: The email address of the user
+ *                address:
+ *                  type: string
+ *                  description: The address of the user
  *              example: 
  *                {
  *                  "name": "Rene Abernathy",
  *                  "email": "Leonie_Nienow81@gmail.com",
  *                  "address": "2006 Greenfelder Points"
  *                }
+ *      400:
+ *        description: Not Found
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                error:
+ *                  type: string
+ *                  description: Error message indicating indicating the reason for the failure
+ *                  example: "Resource not found: User"
+ *      500:
+ *        description: Internal Server Error
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                error:
+ *                  type: string
+ *                  description: Error message indicating the reason for the failure
+ *                  example: "Error fetching users: Internal Server Error"    
  */
 // POST request to base url <- creates new user object and adds onto users array
 router.post("/", async (req, res) => {
@@ -148,7 +217,7 @@ router.post("/", async (req, res) => {
 
 /**
  * @swagger
- * /api/users/:id:
+ * /api/users/{id}:
  *  put:
  *    summary: Updates an existing user's information
  *    description: Returns an updated user object
@@ -184,11 +253,17 @@ router.put("/:id", async (req, res) => {
 
 /**
  * @swagger
- * /api/users:
+ * /api/users{id}:
  *  delete:
  *    summary: Deletes an existing user's information
- *    description: Returns an updated user object
- *    parameters: {id, user: {name, email, address}}
+ *    description: Deletes an existing user's information
+ *    parameters:
+ *      in: path
+ *       name: id
+ *       required: true
+ *        schema:
+ *          type: string
+ *         description: The ID of the user to delete
  *    responses:
  *      200:
  *        description: Successful response
