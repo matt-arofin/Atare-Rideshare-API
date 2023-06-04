@@ -6,7 +6,7 @@ const router = express.Router();
 /**
  * @swagger
  * tags:
- *  name: Users
+ *  name: /api/users
  *  description: User management
  */
 
@@ -17,7 +17,7 @@ const router = express.Router();
  *    summary: Get all users
  *    description: Returns a list of all users
  *    tags:
- *      - Users
+ *      - /api/users
  *    responses:
  *      200:
  *        description: Successful response
@@ -25,7 +25,7 @@ const router = express.Router();
  *          application/json:
  *            schema:
  *              type: array
- *              example: 
+ *              example:
  *                [{
  *                  "_id": {
  *                    "$oid": "64791add9e685f33dbc97b44"
@@ -84,6 +84,8 @@ router.get("/", async (req, res) => {
  *  get:
  *    summary: Get a specific user
  *    description: Returns a single user object
+ *    tags:
+ *      - /api/users
  *    responses:
  *      200:
  *        description: Successful response
@@ -92,7 +94,7 @@ router.get("/", async (req, res) => {
  *            schema:
  *              type: array
  *              example:
- *                {
+ *                [{
  *                  "_id": {
  *                    "$oid": "64791add9e685f33dbc97b44"
  *                  },
@@ -100,7 +102,7 @@ router.get("/", async (req, res) => {
  *                  "email": "Eric_Strosin16@yahoo.com",
  *                  "address": "1010 Emmalee Expressway",
  *                  "__v": 0
- *                }
+ *                }]
  *      404:
  *        description: Not Found
  *        content:
@@ -124,19 +126,20 @@ router.get("/", async (req, res) => {
  *                  description: Error message indicating the reason for the failure
  *                  example: "Error fetching users: Internal Server Error"
  */
-//GET by id (/:id) <- can be tested using 
+//GET by id (/:id) <- can be tested using
 router.get("/:id", async (req, res) => {
-  const { id } = req.params
+	const { id } = req.params;
 	console.log(`Here is the user with ID: ${id}`);
 	try {
 		const user = await userModel.findById(id);
-		if(!user) {res.status(404).json({ error: `Error fetching user: ${error}`})}
-    res.status(200).json(user);
+		if (!user) {
+			res.status(404).json({ error: `Error fetching user: ${error}` });
+		}
+		res.status(200).json(user);
 	} catch (error) {
 		res.status(500).json({ error: `Error fetching users: ${error}` });
 	}
 });
-
 
 /**
  * @swagger
@@ -144,6 +147,8 @@ router.get("/:id", async (req, res) => {
  *  post:
  *    summary: Create a new user
  *    description: Creates a new user object and adds it to the database
+ *    tags:
+ *      - /api/users
  *    requestBody:
  *      required: true
  *    content:
@@ -176,7 +181,7 @@ router.get("/:id", async (req, res) => {
  *                address:
  *                  type: string
  *                  description: The address of the user
- *              example: 
+ *              example:
  *                {
  *                  "name": "Rene Abernathy",
  *                  "email": "Leonie_Nienow81@gmail.com",
@@ -193,18 +198,23 @@ router.get("/:id", async (req, res) => {
  *                error:
  *                  type: string
  *                  description: Error message indicating the reason for the failure
- *                  example: "Error creating user: Internal Server Error"    
+ *                  example: "Error creating user: Internal Server Error"
  */
 // POST request to base url <- creates new user object and adds onto users array
 router.post("/", async (req, res) => {
 	console.log("a new user has been added");
-  const { name, email, address, phoneNumber } = req.body;
-  try {
-    const newUser = await userModel.create({ name, email, address, phoneNumber });
-    res.status(201).json(newUser);
-  } catch (error) {
-    res.status(500).json({ error: `Error creating new user: ${error}`});
-  }
+	const { name, email, address, phoneNumber } = req.body;
+	try {
+		const newUser = await userModel.create({
+			name,
+			email,
+			address,
+			phoneNumber,
+		});
+		res.status(201).json(newUser);
+	} catch (error) {
+		res.status(500).json({ error: `Error creating new user: ${error}` });
+	}
 });
 
 /**
@@ -213,7 +223,27 @@ router.post("/", async (req, res) => {
  *  put:
  *    summary: Updates an existing user's information
  *    description: Returns an updated user object
- *    parameters: {id, user: {name, email, address}}
+ *    tags:
+ *      - /api/users
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the user to update
+ *       - in: body
+ *         name: user
+ *         required: true
+ *         schema:
+ *           type: object
+ *           properties:
+ *             name:
+ *               type: string
+ *             email:
+ *               type: string
+ *             address:
+ *               type: string
  *    responses:
  *      200:
  *        description: Successful response
@@ -221,6 +251,17 @@ router.post("/", async (req, res) => {
  *          application/json:
  *            schema:
  *              type: object
+ *      400:
+ *        description: Bad Request
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                error:
+ *                  type: string
+ *                  description: Error message indicating indicating the reason for the failure
+ *                  example: "Resource not found: User"
  *      404:
  *        description: Not Found
  *        content:
@@ -242,67 +283,70 @@ router.post("/", async (req, res) => {
  *                error:
  *                  type: string
  *                  description: Error message indicating the reason for the failure
- *                  example: "Error updating users: Internal Server Error"  
+ *                  example: "Error updating users: Internal Server Error"
  */
 // Update request to base url <- updates an existing user object and returns to array. Future improvement should only require the parameter that needs changing to be sent with req.body
 router.put("/:id", async (req, res) => {
 	console.log("an existing user has been updated");
-  const { id } = req.params;
-  const { name, email, address, phoneNumber  } = req.body;
-  try {
-    const updatedUser = await userModel.findByIdAndUpdate(
-      id,
-      {name, email, address, phoneNumber },
-      { new: true }
-    );
-    if(!updatedUser) {
-      return res.status(404).json({ message: 'User not found'});
-
-    }
-    res.status(200).json({updatedUser})
-  } catch (error) {
-    res.status(500).json({ error: `Error updating user: ${error}`});
-  }
+	const { id } = req.params;
+	const { name, email, address, phoneNumber } = req.body;
+	try {
+		const updatedUser = await userModel.findByIdAndUpdate(
+			id,
+			{ name, email, address, phoneNumber },
+			{ new: true }
+		);
+		if (!updatedUser) {
+			return res.status(404).json({ message: "User not found" });
+		}
+		res.status(200).json({ updatedUser });
+	} catch (error) {
+		res.status(500).json({ error: `Error updating user: ${error}` });
+	}
 });
 
 /**
  * @swagger
- * /api/users{id}:
- *  delete:
- *    summary: Deletes an existing user's information
- *    description: Deletes an existing user's information
- *    parameters:
- *      in: path
- *       name: id
- *       required: true
- *        schema:
- *          type: string
+ * /api/users/{id}:
+ *   delete:
+ *     summary: Deletes an existing user's information
+ *     description: Deletes an existing user's information
+ *     tags:
+ *       - /api/users
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
  *         description: The ID of the user to delete
- *    responses:
+ *     responses:
  *      200:
  *        description: Successful response
  *        content:
  *          application/json:
  *            schema:
  *              type: object
+ *      400:
+ *        description: Bad Request
  *      404:
  *        description: Not found
  *      500:
  *        description: Server error
  */
 // Delete request to base url <- updates an existing user object and returns to array
-router.delete('/:id', async (req, res) => {
-  console.log('a user is being deleted')
-  const { id } = req.params;
-  try {
-    const deletedUser = await userModel.findByIdAndDelete(id);
-    if (!deletedUser) {
-      return res.status(404).json({ error: `User not found`})
-    }
-    res.status(200).json({ message: 'User deleted successfully'});
-  } catch (error) {
-    res.status(500).json({ error: `Error deleting user: ${error}`});
-  }
+router.delete("/:id", async (req, res) => {
+	console.log("a user is being deleted");
+	const { id } = req.params;
+	try {
+		const deletedUser = await userModel.findByIdAndDelete(id);
+		if (!deletedUser) {
+			return res.status(404).json({ error: `User not found` });
+		}
+		res.status(200).json({ message: "User deleted successfully" });
+	} catch (error) {
+		res.status(500).json({ error: `Error deleting user: ${error}` });
+	}
 });
 
 export default router;

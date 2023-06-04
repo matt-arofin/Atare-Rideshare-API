@@ -29,7 +29,6 @@ describe('Rides Endpoints', () => {
     it('should return all rides', async () => {
       const response = await request(app).get('/api/rides');
       expect(response.status).toBe(200);
-      // Add assertions for the response body
     });
   });
 
@@ -37,14 +36,12 @@ describe('Rides Endpoints', () => {
     it('should return a specific ride', async () => {
       const response = await request(app).get(`/api/rides/${rideId}`);
       expect(response.status).toBe(200);
-      // Add assertions for the response body
     });
 
     it('should return 404 if the ride is not found', async () => {
       const invalidId = '123456789';
       const response = await request(app).get(`/api/rides/${invalidId}`);
       expect(response.status).toBe(404);
-      // Add assertions for the response body
     });
   });
 
@@ -75,7 +72,6 @@ describe('Rides Endpoints', () => {
 
       const response = await request(app).post('/api/rides').send(rideData);
       expect(response.status).toBe(201);
-      // Add assertions for the response body
       rideId = response.body._id; // Save the created ride's ID for future tests
     });
   });
@@ -107,14 +103,12 @@ describe('Rides Endpoints', () => {
 
       const response = await request(app).put(`/api/rides/${rideId}`).send(updatedRideData);
       expect(response.status).toBe(200);
-      // Add assertions for the response body
     });
 
     it('should return 404 if the ride is not found', async () => {
       const invalidId = '123456789';
       const response = await request(app).put(`/api/rides/${invalidId}`);
       expect(response.status).toBe(404);
-      // Add assertions for the response body
     });
   });
 
@@ -122,14 +116,12 @@ describe('Rides Endpoints', () => {
     it('should delete an existing ride', async () => {
       const response = await request(app).delete(`/api/rides/${rideId}`);
       expect(response.status).toBe(200);
-      // Add assertions for the response body
     });
 
     it('should return 404 if the ride is not found', async () => {
       const invalidId = '123456789';
       const response = await request(app).delete(`/api/rides/${invalidId}`);
       expect(response.status).toBe(404);
-      // Add assertions for the response body
     });
   });
 });

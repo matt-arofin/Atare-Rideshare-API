@@ -6,7 +6,7 @@ const router = express.Router();
 /**
  * @swagger
  * tags:
- *  name: Rides
+ *  name: /api/rides
  *  description: Ride management
  */
 
@@ -17,7 +17,7 @@ const router = express.Router();
  *     summary: Get all rides
  *     description: Get a list of all rides
  *     tags:
- *       - Rides
+ *       - /api/rides
  *     responses:
  *       200:
  *         description: Successful response
@@ -47,7 +47,7 @@ const router = express.Router();
  *                       type: string
  *                       description: The dropoff location for the ride
  *               example:
- *                 {
+ *                 [{
  *                   "_id": {
  *                     "$oid": "647bb64042366c9c56c9e0de"
  *                   },
@@ -84,19 +84,27 @@ const router = express.Router();
  *                     }
  *                   },
  *                   "__v": 0
- *                 }   
- *       500:
- *         description: Internal Server Error
+ *                 }]
+ *      500:
+ *        description: Internal Server Error
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                error:
+ *                  type: string
+ *                  description: Error message indicating the reason for the failure
+ *                  example: "Error fetching rides: Internal Server Error"
  */
 router.get("/", async (req, res) => {
-  try {
-    const rides = await rideModel.find();
-    res.status(200).json(rides);
-  } catch (error) {
-    res.status(500).json({ error: `Error fetching rides: ${error}`})
-  }
+	try {
+		const rides = await rideModel.find();
+		res.status(200).json(rides);
+	} catch (error) {
+		res.status(500).json({ error: `Error fetching rides: ${error}` });
+	}
 });
-
 
 /**
  * @swagger
@@ -104,6 +112,8 @@ router.get("/", async (req, res) => {
  *   get:
  *     summary: Get a ride by ID
  *     description: Get a ride by its ID
+ *     tags:
+ *      - /api/rides
  *     parameters:
  *       - name: id
  *         in: path
@@ -136,30 +146,89 @@ router.get("/", async (req, res) => {
  *                 dropoffLocation:
  *                   type: string
  *                   description: The dropoff location for the ride
- *       404:
- *         description: Not Found
- *       500:
- *         description: Internal Server Error
+ *                example:
+ *                 {
+ *                   "_id": {
+ *                     "$oid": "647c96b86c93c50e05ac9d6b"
+ *                   },
+ *                   "driver": {
+ *                     "name": "Eric Considine",
+ *                     "phoneNumber": "+234 520 996 9262",
+ *                     "_id": {
+ *                       "$oid": "647c96b86c93c50e05ac9d6c"
+ *                     }
+ *                   },
+ *                   "passengers": [
+ *                     {
+ *                       "name": "Deanna D'Amore",
+ *                       "phoneNumber": "+234 778 169 3477",
+ *                       "_id": {
+ *                         "$oid": "647c96b86c93c50e05ac9d6d"
+ *                       }
+ *                     }
+ *                   ],
+ *                   "locations": {
+ *                     "pickup": {
+ *                       "latitude": "-29.064",
+ *                       "longitude": "-162.0453",
+ *                       "_id": {
+ *                         "$oid": "647c96b86c93c50e05ac9d6e"
+ *                       }
+ *                     },
+ *                     "dropoff": {
+ *                       "latitude": "-63.3434",
+ *                       "longitude": "-98.2532",
+ *                       "_id": {
+ *                         "$oid": "647c96b86c93c50e05ac9d6f"
+ *                       }
+ *                     }
+ *                   },
+ *                   "__v": 0
+ *                 }     
+ *      404:
+ *        description: Not found
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                error:
+ *                  type: string
+ *                  description: Error message indicating the reason for the failure
+ *                  example: "Error creating ride: Ride not found"
+ *      500:
+ *        description: Internal Server Error
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                error:
+ *                  type: string
+ *                  description: Error message indicating the reason for the failure
+ *                  example: "Error fetching rides: Internal Server Error"
  */
 router.get("/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const ride = await rideModel.findById(id);
-    if (!ride) {
-      return res.status(404).json({ error: `Ride not found`});
-    }
-    res.status(200).json(ride);
-  } catch (error) {
-    res.status(500).json({ error: `Error fetching ride: ${error}`});
-  }
+	try {
+		const { id } = req.params;
+		const ride = await rideModel.findById(id);
+		if (!ride) {
+			return res.status(404).json({ error: `Ride not found` });
+		}
+		res.status(200).json(ride);
+	} catch (error) {
+		res.status(500).json({ error: `Error fetching ride: ${error}` });
+	}
 });
 
 /**
  * @swagger
  * /api/rides/{id}:
  *   post:
- *     summary: Update a ride by ID
- *     description: Update a ride with new details
+ *     summary: Create a new ride by ID
+ *     description: Creates a ride with user and driver information
+ *     tags:
+ *      - /api/rides
  *     parameters:
  *       - name: id
  *         in: path
@@ -189,7 +258,7 @@ router.get("/:id", async (req, res) => {
  *                 type: string
  *                 description: The dropoff location for the ride
  *     responses:
- *       200:
+ *       201:
  *         description: Successful response
  *         content:
  *           application/json:
@@ -215,24 +284,42 @@ router.get("/:id", async (req, res) => {
  *                   description: The dropoff location for the ride
  *       400:
  *         description: Bad Request
- *       404:
- *         description: Not Found
- *       500:
- *         description: Internal Server Error
+ *      404:
+ *        description: Not found
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                error:
+ *                  type: string
+ *                  description: Error message indicating the reason for the failure
+ *                  example: "Error creating ride: Ride not found"
+ *      500:
+ *        description: Internal Server Error
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                error:
+ *                  type: string
+ *                  description: Error message indicating the reason for the failure
+ *                  example: "Error creating new ride: Internal Server Error"
  */
 // Shape = {driver, user, locations: {pickup, dropoff}}
 router.post("/", async (req, res) => {
-  try {
-    const { driver, passengers,locations } =  req.body;
-    const newRide = await rideModel.create({
-      driver,
-      passengers,
-      locations
-    });
-    res.status(201).json(newRide);
-  } catch (error) {
-    res.status(500).json({ error: `Error creating new ride: ${error}`});
-  }
+	try {
+		const { driver, passengers, locations } = req.body;
+		const newRide = await rideModel.create({
+			driver,
+			passengers,
+			locations,
+		});
+		res.status(201).json(newRide);
+	} catch (error) {
+		res.status(500).json({ error: `Error creating new ride: ${error}` });
+	}
 });
 
 /**
@@ -241,6 +328,8 @@ router.post("/", async (req, res) => {
  *   put:
  *     summary: Update a ride by ID
  *     description: Update a ride with new details
+ *     tags:
+ *       - /api/rides
  *     parameters:
  *       - name: id
  *         in: path
@@ -297,38 +386,58 @@ router.post("/", async (req, res) => {
  *       400:
  *         description: Bad Request
  *       404:
- *         description: Not Found
+ *         description: Not found
+ *         content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                error:
+ *                  type: string
+ *                  description: Error message indicating the reason for the failure
+ *                  example: "Error updating ride: Ride note found"
  *       500:
  *         description: Internal Server Error
+ *         content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                error:
+ *                  type: string
+ *                  description: Error message indicating the reason for the failure
+ *                  example: "Error updating ride: Internal Server Error"
  */
 router.put("/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { driver, passengers, locations } = req.body;
-    const updatedRide = await rideModel.findByIdAndUpdate(
-      id,
-      {
-        driver,
-        passengers,
-        locations
-      },
-      { new: true }
-    );
-    if (!updatedRide) {
-      return res.status(404).json({ error: `Ride not found` });
-    }
-    res.status(200).json(updatedRide);
-  } catch (error) {
-    res.status(500).json({ error: `Error updating ride: ${error}`})
-  }
+	try {
+		const { id } = req.params;
+		const { driver, passengers, locations } = req.body;
+		const updatedRide = await rideModel.findByIdAndUpdate(
+			id,
+			{
+				driver,
+				passengers,
+				locations,
+			},
+			{ new: true }
+		);
+		if (!updatedRide) {
+			return res.status(404).json({ error: `Ride not found` });
+		}
+		res.status(200).json(updatedRide);
+	} catch (error) {
+		res.status(500).json({ error: `Error updating ride: ${error}` });
+	}
 });
 
 /**
  * @swagger
  * /api/rides/{id}:
- *   put:
+ *   delete:
  *     summary: Update a ride by ID
  *     description: Update a ride with new details
+ *     tags:
+ *      - /api/rides
  *     parameters:
  *       - name: id
  *         in: path
@@ -382,24 +491,40 @@ router.put("/:id", async (req, res) => {
  *                 dropoffLocation:
  *                   type: string
  *                   description: The dropoff location for the ride
- *       400:
- *         description: Bad Request
  *       404:
- *         description: Not Found
+ *         description: Not found
+ *         content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                error:
+ *                  type: string
+ *                  description: Error message indicating the reason for the failure
+ *                  example: "Error deleting ride: Ride not found"
  *       500:
  *         description: Internal Server Error
+ *         content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                error:
+ *                  type: string
+ *                  description: Error message indicating the reason for the failure
+ *                  example: "Error deleting ride: Internal Server Error"
  */
 router.delete("/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const deletedRide = await rideModel.findByIdAndDelete(id);
-    if(!deletedRide) {
-      return res.status(404).json({ error: `Ride not found` })
-    }
-    res.status(200).json({ message: `Ride deleted successfully`})
-  } catch (error) {
-    res.status(500).json({ error: `Error deleting ride: ${error}`})
-  }
+	try {
+		const { id } = req.params;
+		const deletedRide = await rideModel.findByIdAndDelete(id);
+		if (!deletedRide) {
+			return res.status(404).json({ error: `Ride not found` });
+		}
+		res.status(200).json({ message: `Ride deleted successfully` });
+	} catch (error) {
+		res.status(500).json({ error: `Error deleting ride: ${error}` });
+	}
 });
 
 export default router;

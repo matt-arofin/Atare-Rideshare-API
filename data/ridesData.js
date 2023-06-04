@@ -17,7 +17,6 @@ const generateMockRides = async (count) => {
   // console.log("Generating mock ride data")
   const connection = await mongoose.createConnection(process.env.MONGO_URL);
 
-
   try {
     // Get all users/riders
     const Driver = connection.model("Driver", driverModel.schema)

@@ -1,6 +1,11 @@
 import request from "supertest";
 import app from "../../index.js";
 import mongoose from "mongoose";
+import userModel from "./usersModel.js";
+import mockUsers from "../../data/usersData.js";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 // Mock the MongoDB connection before running the tests
 beforeAll(async () => {
@@ -19,30 +24,27 @@ afterAll(async () => {
 describe('Users Endpoints', () => {
   let userId;
 
-  describe('GET /users', () => {
+  describe('GET /api/users', () => {
     it('should return all users', async () => {
-      const response = await request(app).get('/users');
+      const response = await request(app).get('/api/users');
       expect(response.status).toBe(200);
-      // Add assertions for the response body
     });
   });
 
-  describe('GET /users/:id', () => {
+  describe('GET /api/users/:id', () => {
     it('should return a specific user', async () => {
-      const response = await request(app).get(`/users/${userId}`);
+      const response = await request(app).get(`/api/users/${userId}`);
       expect(response.status).toBe(200);
-      // Add assertions for the response body
     });
 
     it('should return 404 if the user is not found', async () => {
-      const invalidId = 'invalid_id';
-      const response = await request(app).get(`/users/${invalidId}`);
+      const invalidId = '123456789';
+      const response = await request(app).get(`/api/users/${invalidId}`);
       expect(response.status).toBe(404);
-      // Add assertions for the response body
     });
   });
 
-  describe('POST /users', () => {
+  describe('POST /api/users', () => {
     it('should create a new user', async () => {
       const userData = {
         name: 'John Doe',
@@ -51,14 +53,13 @@ describe('Users Endpoints', () => {
         address: '123 Main St',
       };
 
-      const response = await request(app).post('/users').send(userData);
+      const response = await request(app).post('/api/users').send(userData);
       expect(response.status).toBe(201);
-      // Add assertions for the response body
       userId = response.body._id; // Save the created user's ID for future tests
     });
   });
 
-  describe('PUT /users/:id', () => {
+  describe('PUT /api/users/:id', () => {
     it('should update an existing user', async () => {
       const updatedUserData = {
         name: 'Updated User',
@@ -67,31 +68,27 @@ describe('Users Endpoints', () => {
         address: '456 Elm St',
       };
 
-      const response = await request(app).put(`/users/${userId}`).send(updatedUserData);
+      const response = await request(app).put(`/api/users/${userId}`).send(updatedUserData);
       expect(response.status).toBe(200);
-      // Add assertions for the response body
     });
 
     it('should return 404 if the user is not found', async () => {
-      const invalidId = 'invalid_id';
-      const response = await request(app).put(`/users/${invalidId}`);
+      const invalidId = '123456789';
+      const response = await request(app).put(`/api/users/${invalidId}`);
       expect(response.status).toBe(404);
-      // Add assertions for the response body
     });
   });
 
-  describe('DELETE /users/:id', () => {
+  describe('DELETE /api/users/:id', () => {
     it('should delete an existing user', async () => {
-      const response = await request(app).delete(`/users/${userId}`);
+      const response = await request(app).delete(`/api/users/${userId}`);
       expect(response.status).toBe(200);
-      // Add assertions for the response body
     });
 
     it('should return 404 if the user is not found', async () => {
-      const invalidId = 'invalid_id';
-      const response = await request(app).delete(`/users/${invalidId}`);
+      const invalidId = '123456789';
+      const response = await request(app).delete(`/api/users/${invalidId}`);
       expect(response.status).toBe(404);
-      // Add assertions for the response body
     });
   });
 });

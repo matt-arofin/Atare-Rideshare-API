@@ -8,9 +8,16 @@ const swaggerOptions = {
       version: '1.0.0',
       description: 'API documentation for the ride share application',
       contact: {
-        name: 'Matthew Arofin'
+        name: 'Matthew Arofin',
+        url: 'Http://www.mattola.pro'
+      },
+    },
+    servers: [
+      {
+        url: 'http://localhost:1337/',
+        description: 'Development server'
       }
-    }
+    ]
   },
   apis: ['./api/*/*.js']
 };
