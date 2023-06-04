@@ -14,7 +14,7 @@ const generateMockUsers = (count) => {
   return users;
 };
 
-const mockUsers = generateMockUsers(10);
+const mockUsers = generateMockUsers(100);
 
 
 export default mockUsers;

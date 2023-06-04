@@ -20,10 +20,14 @@ Create a functional rest API for a ride-sharing app (eg bolt, uber)  using node 
 
 
 ## Instructions:
-* After installing dependencies and running npm run dev, use localhost:1337 to dispatch requests to the various endpoints of this API.
-* Copy the included .env file into the root of this directory in order to eng connection to the MongoDB collection.
-* Documentation on each of the following and their functions can be accessed via http://localhost:1337/api-docs:
-### Enpoints
+* After installing dependencies and starting the server by using the command `npm run dev`, use localhost:1337 to dispatch requests to the various endpoints of this API.
+* Copy the included .env file into the root of this directory in order to establish a connection to the MongoDB collection.
+* Ensure payloads attached to any post/put requests are correctly formatted JSON objects
+* The MongoDB collections for users, drivers and rides come with 100 mock data entries 
+* Documentation on each of the following endpoints, their functions and expected payloads and parameters can be accessed via http://localhost:1337/api-docs:
+### Endpoints
 RIDES - http://localhost:1337/api/rides
 USERS - http://localhost:1337/api/users
 DRIVERS - http://localhost:1337/api/drivers
+Documentation - https://localhost:1337/api-docs
+

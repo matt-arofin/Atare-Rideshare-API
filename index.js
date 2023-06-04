@@ -11,10 +11,10 @@ import driversRouter from "./api/drivers/driversRouter.js";
 import ridesRouter from "./api/rides/ridesRouter.js"
 // import userModel from "./api/users/usersModel.js";
 // import mockUsers from "./data/usersData.js";
-import driverModel from "./api/drivers/driversModel.js";
-import mockDrivers from "./data/driversData.js";
-import rideModel from "./api/rides/ridesModel.js";
-import mockRides from "./data/ridesData.js";
+// import driverModel from "./api/drivers/driversModel.js";
+// import mockDrivers from "./data/driversData.js";
+// import rideModel from "./api/rides/ridesModel.js";
+// import mockRides from "./data/ridesData.js";
 
 
 // CONFIGURATIONS

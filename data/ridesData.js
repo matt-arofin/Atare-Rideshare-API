@@ -61,6 +61,6 @@ const generateMockRides = async (count) => {
   }
 };
 
-const mockRides = await generateMockRides(10);
+const mockRides = await generateMockRides(100);
 
 export default mockRides;

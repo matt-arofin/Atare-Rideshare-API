@@ -77,9 +77,10 @@ router.get("/:id", async (req, res) => {
 
 router.post("/", async (req, res) => {
   console.log("Creating a new driver");
-  const { name, email, address, phoneNumber, car } = req.params;
+  const { name, email, address, phoneNumber, car} = req.body;
+
   try {
-    const newDriver = await driversModel.create({ name, email, address, phoneNumber });
+    const newDriver = await driversModel.create({ name, email, address, phoneNumber, car });
     res.status(201).json({newDriver});
   } catch (error) {
     res.status(500).json({ error: `Error creating new driver: ${error}`})
@@ -94,12 +95,13 @@ router.put("/:id", async (req, res) => {
   try {
     const updatedDriver = await driversModel.findByIdAndUpdate(
       id,
-      { name, email, address, phoneNumber },
+      { name, email, address, phoneNumber, car },
       { new: true}
     );
-    if (!updatedUser) {
+    if (!updatedDriver) {
       return res.status(404).json({ error: `Driver not found`});
     }
+    res.status(200).json(updatedDriver);
   } catch (error) {
     res.status(500).json({ error: `Error updating driver: ${error}`})
   }
@@ -110,7 +112,7 @@ router.delete("/:id", async (req,res) => {
   const { id } = req.params;
   console.log(`Deleting driver with ID: ${id}`);
   try {
-    const deletedDriver = await driversModel.findbyIdandDelete(id);
+    const deletedDriver = await driversModel.findByIdAndDelete(id);
     if (!deletedDriver) {
       return res.status(404).json({ error: `Driver not found`})
     }

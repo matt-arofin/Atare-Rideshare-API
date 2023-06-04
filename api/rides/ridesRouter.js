@@ -5,10 +5,19 @@ const router = express.Router();
 
 /**
  * @swagger
+ * tags:
+ *  name: Rides
+ *  description: Ride management
+ */
+
+/**
+ * @swagger
  * /api/rides:
  *   get:
  *     summary: Get all rides
  *     description: Get a list of all rides
+ *     tags:
+ *       - Rides
  *     responses:
  *       200:
  *         description: Successful response
@@ -29,13 +38,53 @@ const router = express.Router();
  *                     type: array
  *                     items:
  *                       type: string
- *                     description: An array of passenger IDs for the ride
- *                   pickupLocation:
- *                     type: string
- *                     description: The pickup location for the ride
- *                   dropoffLocation:
- *                     type: string
- *                     description: The dropoff location for the ride
+ *                     description: An array of passenger names and phone numbers for the ride
+ *                   locations:
+ *                     pickup:
+ *                       type: string
+ *                       description: The pickup location for the ride
+ *                     dropoff:
+ *                       type: string
+ *                       description: The dropoff location for the ride
+ *               example:
+ *                 {
+ *                   "_id": {
+ *                     "$oid": "647bb64042366c9c56c9e0de"
+ *                   },
+ *                   "driver": {
+ *                     "name": "Arnold Brown",
+ *                     "phoneNumber": "+234 692 015 9972",
+ *                     "_id": {
+ *                       "$oid": "647bb64042366c9c56c9e0df"
+ *                     }
+ *                   },
+ *                   "passengers": [
+ *                     {
+ *                       "name": "Christine Klein",
+ *                       "phoneNumber": "+234 727 628 6959",
+ *                       "_id": {
+ *                         "$oid": "647bb64042366c9c56c9e0e0"
+ *                       }
+ *                     }
+ *                   ],
+ *                   "locations": {
+ *                     "pickup": {
+ *                       "latitude": "57.7575",
+ *                       "longitude": "-18.9329",
+ *                       "_id": {
+ *                         "$oid": "647bb64042366c9c56c9e0e1"
+ *                       }
+ *                     },
+ *                     "dropoff": {
+ *                       "latitude": "-1.2597",
+ *                       "longitude": "10.5322",
+ *                       "_id": {
+ *                         "$oid": "647bb64042366c9c56c9e0e2"
+ *                       }
+ *                     }
+ *                   },
+ *                   "__v": 0
+ *                 }   
  *       500:
  *         description: Internal Server Error
  */
@@ -47,6 +96,7 @@ router.get("/", async (req, res) => {
     res.status(500).json({ error: `Error fetching rides: ${error}`})
   }
 });
+
 
 /**
  * @swagger
@@ -107,7 +157,7 @@ router.get("/:id", async (req, res) => {
 /**
  * @swagger
  * /api/rides/{id}:
- *   put:
+ *   post:
  *     summary: Update a ride by ID
  *     description: Update a ride with new details
  *     parameters:
@@ -176,11 +226,8 @@ router.post("/", async (req, res) => {
     const { driver, passengers,locations } =  req.body;
     const newRide = await rideModel.create({
       driver,
-      user,
-      locations: {
-        pickup,
-        dropoff,
-      }
+      passengers,
+      locations
     });
     res.status(201).json(newRide);
   } catch (error) {

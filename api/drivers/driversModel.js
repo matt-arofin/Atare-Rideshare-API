@@ -1,8 +1,6 @@
 import mongoose from "mongoose";
 
-const Schema = mongoose.Schema
-
-const driverSchema = new Schema({
+const driverSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -22,7 +20,7 @@ const driverSchema = new Schema({
   car: {
     type: Object,
     required: true,
-    manufacturer: {
+    vehicle: {
       type: String,
       required: true,
     },
@@ -30,7 +28,7 @@ const driverSchema = new Schema({
       type: String,
       required: true,
     },
-    vin: {
+    vrm: {
       type: String,
       required: true,
     }

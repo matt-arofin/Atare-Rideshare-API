@@ -19,15 +19,6 @@ const generateMockDrivers = (count) => {
   return drivers
 };
 
-const mockDrivers = generateMockDrivers(10);
+const mockDrivers = generateMockDrivers(100);
 
 export default mockDrivers;
-
-// important information:
-/* 
-name
-email
-address
-phone number
-car:  {manufacturer, color, vin}
-*/

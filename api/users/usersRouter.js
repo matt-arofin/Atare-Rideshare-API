@@ -16,6 +16,8 @@ const router = express.Router();
  *  get:
  *    summary: Get all users
  *    description: Returns a list of all users
+ *    tags:
+ *      - Users
  *    responses:
  *      200:
  *        description: Successful response
@@ -122,13 +124,14 @@ router.get("/", async (req, res) => {
  *                  description: Error message indicating the reason for the failure
  *                  example: "Error fetching users: Internal Server Error"
  */
-//GET by id (/:id) <- can be tested using 64791add9e685f33dbc97b44
+//GET by id (/:id) <- can be tested using 
 router.get("/:id", async (req, res) => {
-	console.log("Here is a specific user");
   const { id } = req.params
+	console.log(`Here is the user with ID: ${id}`);
 	try {
 		const user = await userModel.findById(id);
 		if(!user) {res.status(404).json({ error: `Error fetching user: ${error}`})}
+    res.status(200).json(user);
 	} catch (error) {
 		res.status(500).json({ error: `Error fetching users: ${error}` });
 	}
@@ -177,19 +180,9 @@ router.get("/:id", async (req, res) => {
  *                {
  *                  "name": "Rene Abernathy",
  *                  "email": "Leonie_Nienow81@gmail.com",
- *                  "address": "2006 Greenfelder Points"
+ *                  "address": "2006 Greenfelder Points",
+ *                  "phoneNumber": "+234 976 453 5661",
  *                }
- *      400:
- *        description: Not Found
- *        content:
- *          application/json:
- *            schema:
- *              type: object
- *              properties:
- *                error:
- *                  type: string
- *                  description: Error message indicating indicating the reason for the failure
- *                  example: "Resource not found: User"
  *      500:
  *        description: Internal Server Error
  *        content:
@@ -200,14 +193,14 @@ router.get("/:id", async (req, res) => {
  *                error:
  *                  type: string
  *                  description: Error message indicating the reason for the failure
- *                  example: "Error fetching users: Internal Server Error"    
+ *                  example: "Error creating user: Internal Server Error"    
  */
 // POST request to base url <- creates new user object and adds onto users array
 router.post("/", async (req, res) => {
 	console.log("a new user has been added");
-  const { name, email, address } = req.body;
+  const { name, email, address, phoneNumber } = req.body;
   try {
-    const newUser = await userModel.create({ name, email, address });
+    const newUser = await userModel.create({ name, email, address, phoneNumber });
     res.status(201).json(newUser);
   } catch (error) {
     res.status(500).json({ error: `Error creating new user: ${error}`});
@@ -229,6 +222,28 @@ router.post("/", async (req, res) => {
  *          application/json:
  *            schema:
  *              type: object
+ *      404:
+ *        description: Not Found
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                error:
+ *                  type: string
+ *                  description: Error message indicating indicating the reason for the failure
+ *                  example: "Resource not found: User"
+ *      500:
+ *        description: Internal Server Error
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                error:
+ *                  type: string
+ *                  description: Error message indicating the reason for the failure
+ *                  example: "Error updating users: Internal Server Error"  
  */
 // Update request to base url <- updates an existing user object and returns to array
 router.put("/:id", async (req, res) => {
