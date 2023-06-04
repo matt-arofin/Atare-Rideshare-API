@@ -205,7 +205,6 @@ router.post("/", async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: `Error creating new user: ${error}`});
   }
-
 });
 
 /**
@@ -245,15 +244,15 @@ router.post("/", async (req, res) => {
  *                  description: Error message indicating the reason for the failure
  *                  example: "Error updating users: Internal Server Error"  
  */
-// Update request to base url <- updates an existing user object and returns to array
+// Update request to base url <- updates an existing user object and returns to array. Future improvement should only require the parameter that needs changing to be sent with req.body
 router.put("/:id", async (req, res) => {
 	console.log("an existing user has been updated");
   const { id } = req.params;
-  const { name, email, address } = req.body;
+  const { name, email, address, phoneNumber  } = req.body;
   try {
     const updatedUser = await userModel.findByIdAndUpdate(
       id,
-      {name, email, address},
+      {name, email, address, phoneNumber },
       { new: true }
     );
     if(!updatedUser) {

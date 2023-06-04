@@ -63,3 +63,5 @@ mongoose
     });
   })
   .catch((error) => console.error(`${error}. Did not connect`))
+
+export default server;
